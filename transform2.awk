@@ -1,7 +1,7 @@
 {
   # on input store into a couple arrays
   # user-movie-rating
-  arr[$2][$1]=$3
+  arr[$2, $1]=$3
   # this user's total scores
   user_review_scores[$2] += $3
   # number of reviews this user has

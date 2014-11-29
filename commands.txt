@@ -8,3 +8,6 @@ awk -F "," '{arr[$1]=$1} END{for (a in arr){ for (a2 in arr) { print arr[a] " " 
 cat ml-100k/u1.test ml-100k/u2.test | awk -F "\t" -f transform2.awk > /tmp/users.txt
 
 awk -f blowup.awk /tmp/users.txt > /tmp/results.txt
+
+# take only top n from each group
+cat sample.txt | sort -k1,1n -k3,3rn -t, | awk -F, 'BEGIN { FS = ","; } { if (counts[$1] < 5) { print $0; counts[$1]++; } } '
