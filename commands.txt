@@ -1,0 +1,10 @@
+awk -F "\t" -f transform2.awk ml-100k/u1.test > /tmp/users.txt
+
+# plus sorts by int
+awk -F "\t" -f transform2.awk ml-100k/u1.test | sort -k1,1n -t, > /tmp/users.txt
+
+awk -F "," '{arr[$1]=$1} END{for (a in arr){ for (a2 in arr) { print arr[a] " " arr[a2]}}}' /tmp/users.txt > /tmp/users_pairwise.txt
+
+cat ml-100k/u1.test ml-100k/u2.test | awk -F "\t" -f transform2.awk > /tmp/users.txt
+
+awk -f blowup.awk /tmp/users.txt > /tmp/results.txt
