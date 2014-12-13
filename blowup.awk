@@ -16,8 +16,8 @@ BEGIN{
   split($1, group_i, ",")
 
   for (j in group_j) {
+    n = base_denom = numerator = denom = sum1 = prodsum = sum2 = sum1sq = sum2sq = 0.0
     if (group_i[1] < group_j[j][1]) {
-      n = sum1 = prodsum = sum2 = sum1sq = sum2sq = 0.0
       # here is where we compare all items in user1's vector
       # to user2's vector and generate the metrics for a 
       # correlation (see wikipedia page for defn of correlation)
@@ -38,21 +38,23 @@ BEGIN{
       # if they have at least one, compute the correlation
       # but use an adjustor to downplay 1-1 similarities
       if (n > 0) {
-        numerator = prodsum - ((sum1 * sum2) / n)
-        base_denom = sum1sq - ((sum1**2)/n) * (sum2sq - (sum2**2)/n)
+        numerator = (n * prodsum) - (sum1 * sum2)
+        base_denom = ((n * sum1sq) - (sum1**2)) * ((n * sum2sq) - (sum2**2))
 
         # min adjustment technique 
         # from: http://bit.ly/1vWVVzs
-        if (n >= 50) min_adjustor = 1
-        if (n < 50) min_adjustor = n / 50
+        #if (n >= 50) min_adjustor = 1
+        #if (n < 50) min_adjustor = n / 50
+        min_adjustor = 1
 
         if (base_denom > 0) denom = sqrt(base_denom)
-        
-        if (denom == 0.0) { correlation = 0 }
+
+        if (denom == 0) { correlation = 0 }
         if (denom != 0) { correlation = (numerator / denom) * min_adjustor }
       }
       # output it if correlation > 0
       if (correlation > 0) {
+        #printf group_i[1] "," group_j[j][1] "," n "," numerator "," base_denom ",%1.5f\n", correlation
         printf group_i[1] "," group_j[j][1] ",%1.5f\n", correlation
       }
     }

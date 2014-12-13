@@ -27,7 +27,7 @@ BEGIN {
   }
   stddev = sqrt(sum_squared_ratings / count)
   user_mean[user[1]] = mean
-  user_stddev[user[1]] = sqrt(sum_squared_ratings)
+  user_stddev[user[1]] = stddev
 }
 
 
@@ -39,11 +39,15 @@ END {
       true_value = users[n][i]
 
       if (length(corr_matrix[u]) > 0) {
+        total_weights = 0
         for (n in corr_matrix[u]) {
-          prediction += corr_matrix[u][n] * users[n][i]
+          total_weights += corr_matrix[u][n]
+        }
+        for (n in corr_matrix[u]) {
+          prediction += (corr_matrix[u][n]/total_weights) * users[n][i]
         }
         predicted_score = (user_mean[u] + (prediction * user_stddev[u]))
-        #if (predicted_score > 5) { predicted_score = 5 }
+        if (predicted_score > 5) { predicted_score = 5 }
         if (predicted_score < 1) { predicted_score = 1 }
 
         joined = joined "," predicted_score 
